@@ -34,7 +34,7 @@ import java.util.UUID;
  * - Updating a user
  */
 @RestController
-@CrossOrigin("*")
+@CrossOrigin(origins = "http://localhost:4200", allowCredentials = "true")
 @RequestMapping("/user/v1")
 @RequiredArgsConstructor
 public class UserController {

@@ -36,7 +36,7 @@ import java.util.UUID;
  * - Saving an order
  */
 @RestController
-@CrossOrigin("*")
+@CrossOrigin(origins = "http://localhost:4200", allowCredentials = "true")
 @RequestMapping("/order/v1")
 @RequiredArgsConstructor
 public class OrderController {

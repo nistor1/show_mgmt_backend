@@ -34,7 +34,7 @@ import java.util.UUID;
  * - Finding all comments from a show
  */
 @RestController
-@CrossOrigin("*")
+@CrossOrigin(origins = "http://localhost:4200", allowCredentials = "true")
 @RequestMapping("/comment/v1")
 @RequiredArgsConstructor
 public class CommentController {

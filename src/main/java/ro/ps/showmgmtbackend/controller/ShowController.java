@@ -33,7 +33,7 @@ import java.util.UUID;
  * - Updating a show
  */
 @RestController
-@CrossOrigin("*")
+@CrossOrigin(origins = "http://localhost:4200", allowCredentials = "true")
 @RequestMapping("/show/v1")
 @RequiredArgsConstructor
 public class ShowController {

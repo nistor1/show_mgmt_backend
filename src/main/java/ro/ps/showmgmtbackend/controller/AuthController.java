@@ -22,7 +22,7 @@ import ro.ps.showmgmtbackend.exception.ExceptionBody;
  */
 @Slf4j
 @RestController
-@CrossOrigin("*")
+@CrossOrigin(origins = "http://localhost:4200", allowCredentials = "true")
 @RequestMapping("/auth/v1")
 @RequiredArgsConstructor
 public class AuthController {
