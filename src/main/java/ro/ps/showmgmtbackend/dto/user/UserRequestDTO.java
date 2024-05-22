@@ -12,8 +12,9 @@ import java.util.UUID;
 @NoArgsConstructor
 public class UserRequestDTO {
     private UUID userId;
-    private String name;
-    private Role role;
-    private Integer age;
     private String email;
+    private String password;
+    private String name;
+    private Integer age;
+    private Role role;
 }

@@ -19,6 +19,7 @@ import ro.ps.showmgmtbackend.model.CommentEntity;
 import ro.ps.showmgmtbackend.repository.CommentRepository;
 
 import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 
@@ -85,6 +86,7 @@ public class CommentServiceBean implements CommentService {
         log.info("Getting all comments for show with ID {} for application {}", showRequestDTO.getShowId(), applicationName);
 
         List<CommentEntity> commentEntityList = commentRepository.findByShow(showMapper.showRequestDTOToShowEntity(showRequestDTO));
+        commentEntityList.sort(Comparator.comparing(CommentEntity::getCommentDate).reversed());
 
         return commentMapper.commentEntityListToCommentResponseDTOList(commentEntityList);
     }

@@ -41,7 +41,7 @@ public class ShowController {
     private final ShowService showService;
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN', 'EMPLOYEE')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'EMPLOYEE', 'CLIENT')")
     @Operation(summary = "Gets show by ID", description = "Show must exist")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Show found",
@@ -147,7 +147,7 @@ public class ShowController {
             @ApiResponse(responseCode = "500", description = "Internal server error",
                     content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionBody.class))})
     })
-    public ResponseEntity<ShowResponseDTO> update(
+        public ResponseEntity<ShowResponseDTO> update(
             @RequestBody ShowRequestDTO showRequestDTO
     ) {
         return new ResponseEntity<>(

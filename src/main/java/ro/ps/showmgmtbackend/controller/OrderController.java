@@ -43,7 +43,7 @@ public class OrderController {
     private final OrderService orderService;
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN', 'EMPLOYEE')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'EMPLOYEE', 'CLIENT')")
     @Operation(summary = "Gets orders by ID", description = "Order must exist")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Order found",
@@ -73,7 +73,7 @@ public class OrderController {
     }
 
     @GetMapping
-    @PreAuthorize("hasAnyRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'EMPLOYEE')")
     @Operation(summary = "Gets all orders", description = "Shows all orders")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Orders found",
@@ -175,7 +175,7 @@ public class OrderController {
         );
     }
 
-    @GetMapping("all-from-user")
+    @GetMapping("all-from-user/{id}")
     @PreAuthorize("hasAnyRole('ADMIN', 'EMPLOYEE', 'CLIENT')")
     @Operation(summary = "Gets all orders from user", description = "Shows all orders from user")
     @ApiResponses(value = {
@@ -185,8 +185,10 @@ public class OrderController {
                     content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionBody.class))})
     })
     public ResponseEntity<List<OrderResponseDTO>> findByUser(
-            @RequestBody UserRequestDTO userRequestDTO
+            @PathVariable("id") UUID userId
     ) {
+        UserRequestDTO userRequestDTO = new UserRequestDTO();
+        userRequestDTO.setUserId(userId);
         return new ResponseEntity<>(
                 orderService.findByUser(userRequestDTO),
                 HttpStatus.OK

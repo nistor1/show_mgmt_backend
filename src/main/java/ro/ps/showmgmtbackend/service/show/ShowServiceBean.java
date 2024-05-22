@@ -14,9 +14,11 @@ import ro.ps.showmgmtbackend.dto.show.ShowResponseDTO;
 import ro.ps.showmgmtbackend.exception.ExceptionCode;
 import ro.ps.showmgmtbackend.exception.NotFoundException;
 import ro.ps.showmgmtbackend.mapper.ShowMapper;
+import ro.ps.showmgmtbackend.model.CommentEntity;
 import ro.ps.showmgmtbackend.model.ShowEntity;
 import ro.ps.showmgmtbackend.repository.ShowRepository;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.Consumer;
@@ -94,6 +96,7 @@ public class ShowServiceBean implements ShowService {
         log.info("Getting all shows for application {}", applicationName);
 
         List<ShowEntity> showEntityList = showRepository.findAll();
+        showEntityList.sort(Comparator.comparing(ShowEntity::getEventDate).reversed());
 
         return showMapper.showEntityListToShowResponseDTOList(showEntityList);
     }

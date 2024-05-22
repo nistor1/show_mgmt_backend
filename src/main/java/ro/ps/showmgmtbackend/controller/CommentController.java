@@ -71,7 +71,7 @@ public class CommentController {
     }
 
     @GetMapping
-    @PreAuthorize("hasAnyRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'EMPLOYEE', 'CLIENT')")
     @Operation(summary = "Gets all comments", description = "All comments")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Comments found",
@@ -139,7 +139,7 @@ public class CommentController {
     }
 
     @PostMapping
-    @PreAuthorize("hasAnyRole('ADMIN', 'EMPLOYEE')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'EMPLOYEE', 'CLIENT')")
     @Operation(summary = "Saves a comment", description = "Saves a comment")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Comment saved",
@@ -158,8 +158,8 @@ public class CommentController {
         );
     }
 
-    @GetMapping("all-from-show")
-    @PreAuthorize("hasAnyRole('ADMIN', 'EMPLOYEE')")
+    @GetMapping("all-from-show/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'EMPLOYEE', 'CLIENT')")
     @Operation(summary = "Gets all comments from show", description = "All comments from show")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Comments found",
@@ -168,8 +168,10 @@ public class CommentController {
                     content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionBody.class))})
     })
     public ResponseEntity<List<CommentResponseDTO>> findByShow(
-            @RequestBody ShowRequestDTO showRequestDTO
+            @PathVariable("id") UUID showId
     ) {
+        ShowRequestDTO showRequestDTO = new ShowRequestDTO();
+        showRequestDTO.setShowId(showId);
         return new ResponseEntity<>(
                 commentService.findByShow(showRequestDTO),
                 HttpStatus.OK

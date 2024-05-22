@@ -3,6 +3,7 @@ package ro.ps.showmgmtbackend.config;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import ro.ps.showmgmtbackend.mapper.CommentMapper;
 import ro.ps.showmgmtbackend.mapper.OrderMapper;
 import ro.ps.showmgmtbackend.mapper.ShowMapper;
@@ -35,9 +36,10 @@ public class Config {
     public UserService userServiceBean(
             UserRepository userRepository,
             UserMapper userMapper,
+            PasswordEncoder passwordEncoder,
             @Value("${spring.application.name:BACKEND}") String applicationName
     ) {
-        return new UserServiceBean(userRepository, userMapper, applicationName);
+        return new UserServiceBean(userRepository, userMapper, applicationName, passwordEncoder);
     }
 
     @Bean

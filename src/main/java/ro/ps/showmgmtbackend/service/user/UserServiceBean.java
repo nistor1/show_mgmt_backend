@@ -6,6 +6,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import ro.ps.showmgmtbackend.dto.CollectionResponseDTO;
 import ro.ps.showmgmtbackend.dto.PageRequestDTO;
 import ro.ps.showmgmtbackend.dto.user.UserRequestDTO;
@@ -26,6 +27,7 @@ public class UserServiceBean implements UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final String applicationName;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public UserResponseDTO findById(UUID userId) {
@@ -74,6 +76,7 @@ public class UserServiceBean implements UserService {
         setIfNotNull(userRequestDTO.getRole(), userToBeUpdated::setRole);
         setIfNotNull(userRequestDTO.getEmail(), userToBeUpdated::setEmail);
         setIfNotNull(userRequestDTO.getAge(), userToBeUpdated::setAge);
+        setIfNotNull(passwordEncoder.encode(userRequestDTO.getPassword()), userToBeUpdated::setPassword);
 
         UserEntity userUpdated = userRepository.save(userToBeUpdated);
 
@@ -120,6 +123,7 @@ public class UserServiceBean implements UserService {
     @Override
     public UserResponseDTO save(UserRequestDTO userRequestDTO) {
         UserEntity userToBeAdded = userMapper.userRequestDTOToUserEntity(userRequestDTO);
+        userToBeAdded.setPassword(passwordEncoder.encode(userToBeAdded.getPassword()));
         UserEntity userAdded = userRepository.save(userToBeAdded);
 
         return userMapper.userEntityToUserResponseDTO(userAdded);
