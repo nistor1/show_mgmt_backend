@@ -1,8 +1,12 @@
 package ro.ps.showmgmtbackend.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.activemq.ActiveMQConnectionFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.jms.core.JmsTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import ro.ps.showmgmtbackend.mapper.CommentMapper;
 import ro.ps.showmgmtbackend.mapper.OrderMapper;
@@ -14,6 +18,9 @@ import ro.ps.showmgmtbackend.repository.ShowRepository;
 import ro.ps.showmgmtbackend.repository.UserRepository;
 import ro.ps.showmgmtbackend.service.comment.CommentService;
 import ro.ps.showmgmtbackend.service.comment.CommentServiceBean;
+import ro.ps.showmgmtbackend.service.mail.AsyncMailServiceBean;
+import ro.ps.showmgmtbackend.service.mail.MailService;
+import ro.ps.showmgmtbackend.service.mail.SyncMailServiceBean;
 import ro.ps.showmgmtbackend.service.order.OrderService;
 import ro.ps.showmgmtbackend.service.order.OrderServiceBean;
 import ro.ps.showmgmtbackend.service.show.ShowService;
@@ -63,5 +70,36 @@ public class Config {
             @Value("${spring.application.name:BACKEND}") String applicationName
     ) {
         return new OrderServiceBean(orderRepository, orderMapper, userMapper, showMapper, showService, applicationName);
+    }
+
+    @Bean
+    public MailService syncMailServiceBean(
+            @Value("${mail-sender-app.url}") String url,
+            RestTemplateBuilder restTemplateBuilder
+    ) {
+        return new SyncMailServiceBean(url, restTemplateBuilder.build());
+    }
+//DE aici nu stiu
+    @Bean
+    public MailService asyncMailServiceBean(
+            @Value("${queues.async-mail-sender-request}") String destination,
+            JmsTemplate jmsTemplate,
+            ObjectMapper objectMapper
+    ) {
+        return new AsyncMailServiceBean(destination, jmsTemplate, objectMapper);
+    }
+
+    @Bean
+    public ActiveMQConnectionFactory connectionFactory() {
+        ActiveMQConnectionFactory factory = new ActiveMQConnectionFactory();
+        factory.setBrokerURL("tcp://localhost:61616");
+        factory.setUserName("admin");
+        factory.setPassword("admin");
+        return factory;
+    }
+
+    @Bean
+    public JmsTemplate jmsTemplate(ActiveMQConnectionFactory connectionFactory) {
+        return new JmsTemplate(connectionFactory);
     }
 }
